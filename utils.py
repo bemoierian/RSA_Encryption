@@ -36,6 +36,7 @@ class Utils:
             sum += mapping * (n ** (len(s) - i - 1))
         # print("Encode block result: " + str(sum))
         return sum
+    
     @staticmethod
     def encodeMessage(msg):
         splitted_msg = Utils.splitText(msg)
@@ -79,6 +80,7 @@ class Utils:
         char = chr(mapping + ord('a') - 10)
         # print("Restore char result:" + char)
         return char
+    
     @staticmethod
     def decodeBlock(num):
         n = 37
@@ -91,7 +93,10 @@ class Utils:
             s.append(char)
             num = num // n
         s.reverse()
-        result = ''.join(s)
+        try:
+            result = ''.join(s)
+        except:
+            return ""
         # print("Decoding result: " + result)
         return result
 
