@@ -3,20 +3,24 @@ class Utils:
     @staticmethod
     def replaceText(text):
         return re.sub(r'[^a-z0-9 ]', ' ', text)
-
+    
+    # Split given text to arrays of blocks, each block of size 5
     @staticmethod
     def splitText(text):
+        blockSize = 5
         splittedRes = []
-        for i in range(0, len(text) - 5, 5):
-            splittedRes.append(text[i:i + 5])
-        remainingPartSize = len(text) - len(splittedRes) * 5
+        for i in range(0, len(text) - blockSize, blockSize):
+            splittedRes.append(text[i:i + blockSize])
+        remainingPartSize = len(text) - len(splittedRes) * blockSize
         if remainingPartSize > 0:
             remainingPart = text[-remainingPartSize:]
-            remainingPart += " " * (5 - remainingPartSize)
+            remainingPart += " " * (blockSize - remainingPartSize)
             splittedRes.append(remainingPart)
         # print("Text split result: " + str(splittedRes))
         return splittedRes
 
+    # Get character mapping for each character
+    # a=10, b=11, etc.
     @staticmethod
     def getCharMapping(char):
         if char == ' ':
@@ -25,7 +29,8 @@ class Utils:
         mapping = int(char) if char.isdigit() else ord(char) - ord('a') + 10
         # print("Char mapping result: " + str(mapping))
         return mapping
-
+    
+    # Encode blocks of 5 character using the equation Σ(Ci*37^i)
     @staticmethod
     def encodeBlock(s):
         n = 37
@@ -68,7 +73,8 @@ class Utils:
         for i in range(len(splitted_cipher)):
             decrypted_msg.append(Utils.decrypt(splitted_cipher[i], d,n))
         return decrypted_msg
-
+    # Get character from its mapping
+    # 10=a, 11=b, etc.
     @staticmethod
     def restoreChar(mapping):
         mapping = int(mapping)
