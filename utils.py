@@ -79,7 +79,7 @@ class Utils:
     def restoreChar(mapping):
         mapping = int(mapping)
         if mapping < 10:
-            return mapping
+            return chr(ord('0') + mapping)
         if mapping == 36:
             # print("Restore char result:" + ' ')
             return ' '
