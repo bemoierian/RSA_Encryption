@@ -4,22 +4,35 @@ from utils import Utils
 sio = socketio.Server()
 
 # -----------Parameters-----------
-p = 524287
-q = 6700417
-e = 793
-n = p * q
-phiN = (p - 1) * (q - 1)
-print("n = " + str(n))
-print("GCD(e, phiN) = " + str(Utils.gcd(e, phiN)))
-d = Utils.modInverse(e, phiN)
+# p = 524287
+# q = 6700417
+# e = 793
+p1 = 588556073069635651905528453169
+q1 = 666749047938382702503498353041
+e1 = 6454649479
+n1 = p1 * q1
+phiN = (p1 - 1) * (q1 - 1)
+print("n = " + str(n1))
+print("GCD(e, phiN) = " + str(Utils.gcd(e1, phiN)))
+d = Utils.modInverse(e1, phiN)
 print("d = " + str(d))
 # --------------------------------
-
+e2 = 0
+n2 = 0
 
 @sio.on('connect')
 def connect(sid, environ):
     print('A user connected')
 
+
+@sio.on('public key')
+def public_key(sid, data):
+    global e2, n2
+    e2 = data[0]
+    n2 = data[1]
+    print('Received public key of client: e = ', e2," n = ", n2)
+    print('Sending my public key to client...')
+    sio.emit('public key', [e1, n1])
 
 @sio.on('chat message')
 def chat_message(sid, data):
@@ -27,16 +40,16 @@ def chat_message(sid, data):
     print('Received: ')
     print(*data)
     # ------------decrypt and decode------------
-    decyptedMsg = Utils.decryptMessage(data, d,n)
+    decyptedMsg = Utils.decryptMessage(data, d,n1)
     decodedMsg = Utils.decodeMessage(decyptedMsg)
     print('Decrypted: ')
     print(decodedMsg)
 
     # --------Read message from terminal--------
-    data = input()
+    msg = input()
     # ------------encode and encrypt------------
-    encoddedMsg = Utils.encodeMessage(data)
-    encyptedMsg = Utils.encryptMessage(encoddedMsg, e,n)
+    encoddedMsg = Utils.encodeMessage(msg)
+    encyptedMsg = Utils.encryptMessage(encoddedMsg, e2,n2)
     print('Cipher: ')
     print(*encyptedMsg)
     # ----------Send encrypted message-----------
