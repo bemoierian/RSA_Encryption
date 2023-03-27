@@ -117,9 +117,9 @@ class Utils:
 
     @staticmethod
     def gcd(a, b):
-        if b == 0:
-            return a
-        return Utils.gcd(b, a % b)
+        while b != 0:
+            a, b = b, a % b
+        return a
 
     @staticmethod
     def modInverse(a, n):
@@ -143,6 +143,12 @@ class Utils:
         while not Utils.is_prime(p):
             p = random.randrange(2 ** (size - 1), 2 ** size - 1)
         return p
+    @staticmethod    
+    def generate_e(phiN):
+        e = random.randrange(0, phiN)
+        while not Utils.gcd(e, phiN) == 1:
+            e = random.randrange(0, phiN)
+        return e
     
     @staticmethod
     def is_prime(n, k=128):

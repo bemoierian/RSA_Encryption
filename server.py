@@ -7,11 +7,14 @@ sio = socketio.Server()
 # p = 524287
 # q = 6700417
 # e = 793
-p1 = 588556073069635651905528453169
-q1 = 666749047938382702503498353041
-e1 = 6454649479
+# p1 = 588556073069635651905528453169
+# q1 = 666749047938382702503498353041
+# e1 = 6454649479
+p1 = Utils.generate_big_prime(1024)
+q1 = Utils.generate_big_prime(1024)
 n1 = p1 * q1
 phiN = (p1 - 1) * (q1 - 1)
+e1 = Utils.generate_e(phiN)
 print("n = " + str(n1))
 print("GCD(e, phiN) = " + str(Utils.gcd(e1, phiN)))
 d = Utils.modInverse(e1, phiN)
@@ -28,15 +31,17 @@ def connect(sid, environ):
 @sio.on('public key')
 def public_key(sid, data):
     global e2, n2
+    data = [int(i) for i in data]
     e2 = data[0]
     n2 = data[1]
     print('Received public key of client: e = ', e2," n = ", n2)
     print('Sending my public key to client...')
-    sio.emit('public key', [e1, n1])
+    sio.emit('public key', [str(i) for i in [e1, n1]])
 
 @sio.on('chat message')
 def chat_message(sid, data):
     # ---------Receive encrypted message--------
+    data = [int(i) for i in data]
     print('Received: ')
     print(*data)
     # ------------decrypt and decode------------
@@ -53,7 +58,7 @@ def chat_message(sid, data):
     print('Cipher: ')
     print(*encyptedMsg)
     # ----------Send encrypted message-----------
-    sio.emit('chat message', encyptedMsg)
+    sio.emit('chat message', [str(i) for i in encyptedMsg])
 
 @sio.on('disconnect')
 def disconnect(sid):
