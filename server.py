@@ -10,8 +10,8 @@ sio = socketio.Server()
 # p1 = 588556073069635651905528453169
 # q1 = 666749047938382702503498353041
 # e1 = 6454649479
-p1 = Utils.generate_big_prime(1024)
-q1 = Utils.generate_big_prime(1024)
+p1 = Utils.generate_big_prime(14)
+q1 = Utils.generate_big_prime(14)
 n1 = p1 * q1
 phiN = (p1 - 1) * (q1 - 1)
 e1 = Utils.generate_e(phiN)
@@ -22,6 +22,7 @@ print("d = " + str(d))
 # --------------------------------
 e2 = 0
 n2 = 0
+
 
 @sio.on('connect')
 def connect(sid, environ):
@@ -34,9 +35,10 @@ def public_key(sid, data):
     data = [int(i) for i in data]
     e2 = data[0]
     n2 = data[1]
-    print('Received public key of client: e = ', e2," n = ", n2)
+    print('Received public key of client: e = ', e2, " n = ", n2)
     print('Sending my public key to client...')
     sio.emit('public key', [str(i) for i in [e1, n1]])
+
 
 @sio.on('chat message')
 def chat_message(sid, data):
@@ -45,7 +47,7 @@ def chat_message(sid, data):
     print('Received: ')
     print(*data)
     # ------------decrypt and decode------------
-    decyptedMsg = Utils.decryptMessage(data, d,n1)
+    decyptedMsg = Utils.decryptMessage(data, d, n1)
     decodedMsg = Utils.decodeMessage(decyptedMsg)
     print('Decrypted: ')
     print(decodedMsg)
@@ -54,11 +56,12 @@ def chat_message(sid, data):
     msg = input()
     # ------------encode and encrypt------------
     encoddedMsg = Utils.encodeMessage(msg)
-    encyptedMsg = Utils.encryptMessage(encoddedMsg, e2,n2)
+    encyptedMsg = Utils.encryptMessage(encoddedMsg, e2, n2)
     print('Cipher: ')
     print(*encyptedMsg)
     # ----------Send encrypted message-----------
     sio.emit('chat message', [str(i) for i in encyptedMsg])
+
 
 @sio.on('disconnect')
 def disconnect(sid):

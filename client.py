@@ -11,8 +11,8 @@ port = 5000
 # p1 = 588556073069635651905528453169
 # q1 = 666749047938382702503498353041
 # e1 = 6454649479
-p1 = Utils.generate_big_prime(1024)
-q1 = Utils.generate_big_prime(1024)
+p1 = Utils.generate_big_prime(14)
+q1 = Utils.generate_big_prime(14)
 n1 = p1 * q1
 phiN = (p1 - 1) * (q1 - 1)
 e1 = Utils.generate_e(phiN)
@@ -23,6 +23,8 @@ print("d = " + str(d))
 # --------------------------------
 e2 = 0
 n2 = 0
+
+
 @sio.event
 def connect():
     print('Connected to server')
@@ -36,17 +38,18 @@ def public_key(data):
     data = [int(i) for i in data]
     e2 = data[0]
     n2 = data[1]
-    print('Received public key of server: e = ', e2," n = ", n2)
+    print('Received public key of server: e = ', e2, " n = ", n2)
     # --------Read message from terminal--------
     print('Send message to server:')
     msg = input()
     # ------------encode and encrypt------------
     encoddedMsg = Utils.encodeMessage(msg)
-    encyptedMsg = Utils.encryptMessage(encoddedMsg, e2,n2)
+    encyptedMsg = Utils.encryptMessage(encoddedMsg, e2, n2)
     print('Cipher: ')
     print(*encyptedMsg)
     # ----------Send encrypted message-----------
     sio.emit('chat message', [str(i) for i in encyptedMsg])
+
 
 @sio.on('chat message')
 def on_message(msg):
@@ -55,7 +58,7 @@ def on_message(msg):
     print('Received: ')
     print(*msg)
     # ------------decrypt and decode------------
-    decyptedMsg = Utils.decryptMessage(msg, d,n1)
+    decyptedMsg = Utils.decryptMessage(msg, d, n1)
     decodedMsg = Utils.decodeMessage(decyptedMsg)
     print('Decrypted: ')
     print(decodedMsg)
@@ -64,10 +67,11 @@ def on_message(msg):
     data = input()
     # ------------encode and encrypt------------
     encoddedMsg = Utils.encodeMessage(data)
-    encyptedMsg = Utils.encryptMessage(encoddedMsg, e1,n1)
+    encyptedMsg = Utils.encryptMessage(encoddedMsg, e1, n1)
     print('Cipher: ')
     print(*encyptedMsg)
     # ----------Send encrypted message-----------
     sio.emit('chat message', [str(i) for i in encyptedMsg])
+
 
 sio.connect(f'http://localhost:{port}')
