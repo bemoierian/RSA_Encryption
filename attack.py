@@ -2,6 +2,7 @@ from utils import Utils
 import threading
 import time
 # import matplotlib.pyplot as plt
+import multiprocessing
 
 
 def search_list(value, lst):
@@ -17,65 +18,83 @@ def search_list(value, lst):
 
 
 def attack(cypherText, plaintext, n, d, result, index):
-    global stop_threads
-    stopValue = (index+1)*n//threadNum
+    # global stop_threads
+    stopValue = (index+1)*(n//threadNum)
     # d = 0
     decyptedMsg = Utils.decryptMessage(cypherText, d, n)
     decodedMsg = Utils.decodeMessage(decyptedMsg)
     # print(decodedMsg)
     # print("Breaking key...")
     while decodedMsg.strip() != plaintext:
+        d = d + 1
         decyptedMsg = Utils.decryptMessage(cypherText, d, n)
         decodedMsg = Utils.decodeMessage(decyptedMsg)
-        d = d + 1
         if d % 100000 == 0:
-            print(f"Thread {index}: d = " + str(d))
+            print(f"Process {index}: d = " + str(d))
         # print(decodedMsg)
-        if stop_threads:
-            return
+        # if stop_threads:
+        #     return -1
         if d >= stopValue:
-            print(f"Thread {index}: Exiting...")
-            return
-    stop_threads = True
-    print(f"Thread {index}: Key broken successfully")
+            print(f"Process {index}: Exiting...")
+            return 0
+    # stop_threads = True
+    print(f"Process {index}: Key broken successfully")
     result[index] = d
-    # for t in threading.enumerate():
-    #     if t != threading.current_thread():
-    #         t.kill()
-    return
+    return d
 
 
-x = [16, 32, 64, 128, 256, 512, 1024]
-y = [0] * len(x)
-plaintext = "sell my car and send me the money"
-cypherText = "68479362 1461920952 188394573 280028037 59633811 482136648 1034574609".split(
+plaintext = "hello world"
+# -----------------14 bits-----------------
+# cypherText = "20923090 26619114 69194545".split(
+#     " ")
+# d = 6411641
+# n = 189467017
+# -----------------16 bits-----------------
+cypherText = "741850173 1876460621 725561250".split(
     " ")
-# d = 711266447
-#     737376275
-n = 1474752551
-threadNum = 12
+# d = 6940807
+n = 1880353231
+threadNum = 6
 results = [None] * threadNum
 threads = [None] * threadNum
-stop_threads = False
-start = time.time()
-for i in range(threadNum):
-    print(f"Starting thread {i}... start index is {(i*n)//threadNum}")
-    t = threading.Thread(target=attack, args=(
-        cypherText, plaintext, n, (i*n)//threadNum, results, i), name=f"Thread-{i}")
-    threads[i] = t
-    t.start()
-for t in threads:
-    t.join()
-end = time.time()
-timeTaken = end - start
-y[0] = timeTaken
-print(f"16 bits | Time taken: {timeTaken} seconds")
-for result in results:
-    if result is not None:
-        print(f"d = {result}")
-# plt.plot(x, y)
-# plt.xlabel('Number of bits')
-# plt.ylabel('Time taken (minutes)')
-# plt.title('Number of bits vs attack time')
-# plt.show()
-print("Exiting...")
+# stop_threads = False
+if __name__ == '__main__':
+    # -----------------multithreading-----------------
+    # start = time.time()
+    # for i in range(threadNum):
+    #     print(f"Starting thread {i}... start index is {(i*n)//threadNum}")
+    #     t = threading.Thread(target=attack, args=(
+    #         cypherText, plaintext, n, (i*n)//threadNum, results, i), name=f"Thread-{i}")
+    #     threads[i] = t
+    #     t.start()
+    # for t in threads:
+    #     t.join()
+    # end = time.time()
+    # for result in results:
+    #     if result is not None:
+    #         print(f"d = {result}")
+
+    # -----------------multiprocessing-----------------
+    start = time.time()
+    with multiprocessing.Pool(processes=threadNum) as pool:
+        results2 = [pool.apply_async(attack, (cypherText, plaintext, n, i*(n//threadNum), results, i))
+                    for i in range(threadNum)]
+        for r in results2:
+            if r.get() != 0:
+                print("d = " + str(r.get()))
+                pool.terminate()
+                break
+    end = time.time()
+
+    # -------------------------------------------------
+    timeTaken = end - start
+    print("14 bits | Time taken: " + str(timeTaken) + " seconds")
+
+    x = [14, 16, 32, 64, 128, 256, 512, 1024]
+    y = [111, 153]
+    # plt.plot(x, y)
+    # plt.xlabel('Number of bits')
+    # plt.ylabel('Time taken (minutes)')
+    # plt.title('Number of bits vs attack time')
+    # plt.show()
+    print("Exiting...")
