@@ -43,7 +43,7 @@ def attack(cypherText, plaintext, n, d, threadIndex, stopValue):
         d = d + 1
         decyptedMsg = Utils.decryptMessage(cypherText, d, n)
         decodedMsg = Utils.decodeMessage(decyptedMsg)
-        if d % 100000 == 0:
+        if d % 1000000 == 0:
             print(f"Process {threadIndex}: d = " + str(d))
         # print(decodedMsg)
         # if stop_threads:
@@ -52,7 +52,8 @@ def attack(cypherText, plaintext, n, d, threadIndex, stopValue):
             print(f"Process {threadIndex}: Exiting...")
             return 0
     # stop_threads = True
-    print(f"Process {threadIndex}: Key broken successfully")
+    print(
+        f"Process {threadIndex}: Key broken successfully, d = {d}, plaintext = {decodedMsg}")
     # result[threadIndex] = d
     return d
 
@@ -60,7 +61,7 @@ def attack(cypherText, plaintext, n, d, threadIndex, stopValue):
 # stop_threads = False
 if __name__ == '__main__':
     print("Starting attack...")
-    nBits = 32
+    nBits = 19
     print(f"nbits = {nBits}")
     # cypherText = "871998463 1613204058 1941644450 1399719919 2491211954 1816385893 1831371137".split(" ")
     p = Utils.generate_big_prime(nBits)
@@ -69,7 +70,7 @@ if __name__ == '__main__':
     phiN = (p - 1) * (q - 1)
     e = Utils.generate_e(phiN)
     print("n = " + str(n))
-    plaintext = "secret"
+    plaintext = "bemoi"
     encoddedMsg = Utils.encodeMessage(plaintext)
     cypherText = Utils.encryptMessage(encoddedMsg, e, n)
     # threadNum = 6
@@ -102,13 +103,17 @@ if __name__ == '__main__':
                 pool.terminate()
                 break
     end = time.time()
+    # -------------------sequential---------------------
+    # start = time.time()
+    # attack(cypherText, plaintext, n, 0, 0, n)
+    # end = time.time()
 
     # -------------------------------------------------
     timeTaken = end - start
     print(f"{nBits} bits | Time taken: " + str(timeTaken) + " seconds")
 
-    x = [14, 16, 32, 64, 128, 256, 512, 1024]
-    y = [111, 153]
+    x = [28, 32, 34, 36, 38]
+    y = [111, 153, 304, 383, 795]
     # plt.plot(x, y)
     # plt.xlabel('Number of bits')
     # plt.ylabel('Time taken (minutes)')
