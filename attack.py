@@ -61,7 +61,7 @@ def attack(cypherText, plaintext, n, d, threadIndex, stopValue):
 # stop_threads = False
 if __name__ == '__main__':
     print("Starting attack...")
-    nBits = 19
+    nBits = 20
     print(f"nbits = {nBits}")
     # cypherText = "871998463 1613204058 1941644450 1399719919 2491211954 1816385893 1831371137".split(" ")
     p = Utils.generate_big_prime(nBits)
@@ -112,8 +112,8 @@ if __name__ == '__main__':
     timeTaken = end - start
     print(f"{nBits} bits | Time taken: " + str(timeTaken) + " seconds")
 
-    x = [28, 32, 34, 36, 38]
-    y = [111, 153, 304, 383, 795]
+    x = [28,   32,  34,  36,  38, 40]
+    y = [111, 153, 304, 383, 795, 1458]
     # plt.plot(x, y)
     # plt.xlabel('Number of bits')
     # plt.ylabel('Time taken (minutes)')
