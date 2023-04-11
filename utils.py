@@ -1,11 +1,12 @@
 import re
 import random
 
+
 class Utils:
     @staticmethod
     def replaceText(text):
         return re.sub(r'[^a-z0-9 ]', ' ', text)
-    
+
     # Split given text to arrays of blocks, each block of size 5
     @staticmethod
     def splitText(text):
@@ -31,7 +32,7 @@ class Utils:
         mapping = int(char) if char.isdigit() else ord(char) - ord('a') + 10
         # print("Char mapping result: " + str(mapping))
         return mapping
-    
+
     # Encode blocks of 5 character using the equation Σ(Ci*37^i)
     @staticmethod
     def encodeBlock(s):
@@ -43,7 +44,7 @@ class Utils:
             sum += mapping * (n ** (len(s) - i - 1))
         # print("Encode block result: " + str(sum))
         return sum
-    
+
     @staticmethod
     def encodeMessage(msg):
         splitted_msg = Utils.splitText(msg)
@@ -53,7 +54,7 @@ class Utils:
         return encoded_msg
 
     @staticmethod
-    def encrypt(msg, e,n):
+    def encrypt(msg, e, n):
         msg = int(msg)
         return pow(msg, e, n)
 
@@ -65,18 +66,19 @@ class Utils:
         return encrypted_msg
 
     @staticmethod
-    def decrypt(cipher, d,n):
+    def decrypt(cipher, d, n):
         cipher = int(cipher)
         return pow(cipher, d, n)
 
     @staticmethod
-    def decryptMessage(splitted_cipher, d,n):
+    def decryptMessage(splitted_cipher, d, n):
         decrypted_msg = []
         for i in range(len(splitted_cipher)):
-            decrypted_msg.append(Utils.decrypt(splitted_cipher[i], d,n))
+            decrypted_msg.append(Utils.decrypt(splitted_cipher[i], d, n))
         return decrypted_msg
     # Get character from its mapping
     # 10=a, 11=b, etc.
+
     @staticmethod
     def restoreChar(mapping):
         mapping = int(mapping)
@@ -88,7 +90,7 @@ class Utils:
         char = chr(mapping + ord('a') - 10)
         # print("Restore char result:" + char)
         return char
-    
+
     @staticmethod
     def decodeBlock(num):
         n = 37
@@ -123,33 +125,34 @@ class Utils:
 
     @staticmethod
     def modInverse(a, n):
-        t = 0
-        newT = 1
+        x = 0
+        y = 1
         r = n
         newR = a
         while newR != 0:
             quotient = r // newR
-            t, newT = newT, t - quotient * newT
+            x, y = y, x - quotient * y
             r, newR = newR, r - quotient * newR
         if r > 1:
             raise ValueError(f"{a} is not invertible modulo {n}")
-        if t < 0:
-            t += n
-        return t
-    
-    @staticmethod    
+        if x < 0:
+            x += n
+        return x
+
+    @staticmethod
     def generate_big_prime(size):
         p = random.randrange(2 ** (size - 1), 2 ** size - 1)
         while not Utils.is_prime(p):
             p = random.randrange(2 ** (size - 1), 2 ** size - 1)
         return p
-    @staticmethod    
+
+    @staticmethod
     def generate_e(phiN):
         e = random.randrange(0, phiN)
         while not Utils.gcd(e, phiN) == 1:
             e = random.randrange(0, phiN)
         return e
-    
+
     @staticmethod
     def is_prime(n, k=128):
         if n == 2 or n == 3:

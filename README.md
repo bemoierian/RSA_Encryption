@@ -32,3 +32,7 @@ Open server.py or client.py, change the value of nbits variable to the desired n
 At the beginning of communication, the client sends his public key (e, n) to the server, and server responds by sending its public key (e, n).
 
 Message sent from client to server is encrypted by the public key of the server and vice-versa.
+
+## Limitations
+
+Only 1 server and 1 client are supported.
