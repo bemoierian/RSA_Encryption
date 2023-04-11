@@ -1,10 +1,10 @@
 from utils import Utils
 import time
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 x = []
 y = []
-for i in range(32, 1024):
+for i in range(32, 1024, 2):
     x.append(i)
     nBits = i
     print(f"nbits = {nBits}")
@@ -22,8 +22,8 @@ for i in range(32, 1024):
     end = time.time()
     y.append(end-start)
     print(f"Time taken to encrypt: {end-start}")
-# plt.plot(x, y)
-# plt.xlabel('Number of bits')
-# plt.ylabel('Time taken (minutes)')
-# plt.title('Number of bits vs attack time')
-# plt.show()
+plt.plot(x, y)
+plt.xlabel('Number of bits')
+plt.ylabel('Time taken (seconds)')
+plt.title('Number of bits vs encryption time')
+plt.show()

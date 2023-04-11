@@ -4,14 +4,9 @@ from utils import Utils
 sio = socketio.Server()
 
 # -----------Parameters-----------
-# p = 524287
-# q = 6700417
-# e = 793
-# p1 = 588556073069635651905528453169
-# q1 = 666749047938382702503498353041
-# e1 = 6454649479
-p1 = Utils.generate_big_prime(14)
-q1 = Utils.generate_big_prime(14)
+nbits = 14
+p1 = Utils.generate_big_prime(nbits)
+q1 = Utils.generate_big_prime(nbits)
 n1 = p1 * q1
 phiN = (p1 - 1) * (q1 - 1)
 e1 = Utils.generate_e(phiN)
