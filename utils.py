@@ -1,8 +1,10 @@
+# this file contains all the utility functions that are used for RSA encryption and decryption
 import re
 import random
 
 
 class Utils:
+    # replace all non-alphanumeric characters with space
     @staticmethod
     def replaceText(text):
         return re.sub(r'[^a-z0-9 ]', ' ', text)
@@ -45,6 +47,7 @@ class Utils:
         # print("Encode block result: " + str(sum))
         return sum
 
+    # uses the above function to encode a given text
     @staticmethod
     def encodeMessage(msg):
         splitted_msg = Utils.splitText(msg)
@@ -53,11 +56,13 @@ class Utils:
             encoded_msg.append(Utils.encodeBlock(splitted_msg[i]))
         return encoded_msg
 
+    # encrypts a given block using the equation c = m^e mod n
     @staticmethod
     def encrypt(msg, e, n):
         msg = int(msg)
         return pow(msg, e, n)
-
+    
+    # encrypts a given message using the above function
     @staticmethod
     def encryptMessage(encoded_msg, e, n):
         encrypted_msg = []
@@ -65,20 +70,22 @@ class Utils:
             encrypted_msg.append(Utils.encrypt(encoded_msg[i], e, n))
         return encrypted_msg
 
+    # decrypts a given block using the equation m = c^d mod n
     @staticmethod
     def decrypt(cipher, d, n):
         cipher = int(cipher)
         return pow(cipher, d, n)
-
+    
+    # decrypts a given message using the above function
     @staticmethod
     def decryptMessage(splitted_cipher, d, n):
         decrypted_msg = []
         for i in range(len(splitted_cipher)):
             decrypted_msg.append(Utils.decrypt(splitted_cipher[i], d, n))
         return decrypted_msg
+    
     # Get character from its mapping
     # 10=a, 11=b, etc.
-
     @staticmethod
     def restoreChar(mapping):
         mapping = int(mapping)
@@ -91,6 +98,8 @@ class Utils:
         # print("Restore char result:" + char)
         return char
 
+    # Decode blocks of 5 character to their original form
+    # this is the inverse of the function encodeBlock
     @staticmethod
     def decodeBlock(num):
         n = 37
@@ -110,19 +119,22 @@ class Utils:
         # print("Decoding result: " + result)
         return result
 
+    # uses the above function to decode a given text
     @staticmethod
     def decodeMessage(splittedMsg):
         decodedMsg = []
         for i in range(len(splittedMsg)):
             decodedMsg.append(Utils.decodeBlock(splittedMsg[i]))
         return ''.join(decodedMsg)
-
+    
+    # calculate the gcd of a and b using Euclid's algorithm
     @staticmethod
     def gcd(a, b):
         while b != 0:
             a, b = b, a % b
         return a
-
+    
+    # calculate the multiplicative inverse of a modulo n using the extended Euclidean algorithm
     @staticmethod
     def modInverse(a, n):
         x = 0
@@ -139,6 +151,7 @@ class Utils:
             x += n
         return x
 
+    # generate a random prime number of [size] bits
     @staticmethod
     def generate_big_prime(size):
         p = random.randrange(2 ** (size - 1), 2 ** size - 1)
@@ -146,6 +159,7 @@ class Utils:
             p = random.randrange(2 ** (size - 1), 2 ** size - 1)
         return p
 
+    # generate a random e between 0 and phiN such that gcd(e, phiN) = 1
     @staticmethod
     def generate_e(phiN):
         e = random.randrange(0, phiN)
@@ -153,6 +167,7 @@ class Utils:
             e = random.randrange(0, phiN)
         return e
 
+    # check if a number is prime using the Miller-Rabin primality test
     @staticmethod
     def is_prime(n, k=128):
         if n == 2 or n == 3:

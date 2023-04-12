@@ -7,8 +7,6 @@ import multiprocessing
 def attack(cypherText, plaintext, n, d, threadIndex, stopValue):
     print(f"Starting process {threadIndex}... start index is {d}")
     # global stop_threads
-    # stopValue = (threadIndex+1)*(n//threadNum)
-    # d = 0
     decyptedMsg = Utils.decryptMessage(cypherText, d, n)
     decodedMsg = Utils.decodeMessage(decyptedMsg)
     # print(decodedMsg)
@@ -19,7 +17,6 @@ def attack(cypherText, plaintext, n, d, threadIndex, stopValue):
         decodedMsg = Utils.decodeMessage(decyptedMsg)
         if d % 1000000 == 0:
             print(f"Process {threadIndex}: d = " + str(d))
-        # print(decodedMsg)
         # if stop_threads:
         #     return -1
         if d >= stopValue:
@@ -35,23 +32,25 @@ def attack(cypherText, plaintext, n, d, threadIndex, stopValue):
 # stop_threads = False
 if __name__ == '__main__':
     print("Starting attack...")
+    # ----------number of bits of the prime numbers p and q----------
     nBits = 32
+    # ---------------------------------------------------------------
     print(f"nbits = {nBits}")
-    # cypherText = "871998463 1613204058 1941644450 1399719919 2491211954 1816385893 1831371137".split(" ")
+    # -----------Parameters-----------
     p = Utils.generate_big_prime(nBits)
     q = Utils.generate_big_prime(nBits)
     n = p * q
     phiN = (p - 1) * (q - 1)
     e = Utils.generate_e(phiN)
     print("n = " + str(n))
+    # --------------------------------
     plaintext = "bemoi"
     encoddedMsg = Utils.encodeMessage(plaintext)
     cypherText = Utils.encryptMessage(encoddedMsg, e, n)
-    # threadNum = 6
-    processesNum = 6
     reald = Utils.modInverse(e, phiN)
     print("Real d = " + str(reald))
     # -----------------multithreading-----------------
+    # threadNum = 6
     # start = time.time()
     # for i in range(threadNum):
     #     print(f"Starting thread {i}... start index is {(i*n)//threadNum}")
@@ -67,6 +66,7 @@ if __name__ == '__main__':
     #         print(f"d = {result}")
 
     # -----------------multiprocessing-----------------
+    processesNum = 6
     start = time.time()
     with multiprocessing.Pool(processes=processesNum) as pool:
         results2 = [pool.apply_async(attack, (cypherText, plaintext, n, i*(n//processesNum),  i, (i+1)*(n//processesNum)))
