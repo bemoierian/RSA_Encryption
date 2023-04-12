@@ -4,7 +4,7 @@ from utils import Utils
 sio = socketio.Server()
 
 # -----------Parameters-----------
-nbits = 14
+nbits = 256
 p1 = Utils.generate_big_prime(nbits)
 q1 = Utils.generate_big_prime(nbits)
 n1 = p1 * q1
@@ -48,11 +48,12 @@ def chat_message(sid, data):
     print(decodedMsg)
 
     # --------Read message from terminal--------
+    print('Send message to client:')
     msg = input()
     # ------------encode and encrypt------------
     encoddedMsg = Utils.encodeMessage(msg)
     encyptedMsg = Utils.encryptMessage(encoddedMsg, e2, n2)
-    print('Cipher: ')
+    print('Ciphertext: ')
     print(*encyptedMsg)
     # ----------Send encrypted message-----------
     sio.emit('chat message', [str(i) for i in encyptedMsg])

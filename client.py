@@ -5,7 +5,7 @@ sio = socketio.Client()
 port = 5000
 
 # -----------Parameters-----------
-nbits = 14
+nbits = 256
 p1 = Utils.generate_big_prime(nbits)
 q1 = Utils.generate_big_prime(nbits)
 n1 = p1 * q1
@@ -40,7 +40,7 @@ def public_key(data):
     # ------------encode and encrypt------------
     encoddedMsg = Utils.encodeMessage(msg)
     encyptedMsg = Utils.encryptMessage(encoddedMsg, e2, n2)
-    print('Cipher: ')
+    print('Ciphertext: ')
     print(*encyptedMsg)
     # ----------Send encrypted message-----------
     sio.emit('chat message', [str(i) for i in encyptedMsg])
@@ -49,21 +49,22 @@ def public_key(data):
 @sio.on('chat message')
 def on_message(msg):
     # ---------Receive encrypted message--------
-    data = [int(i) for i in data]
+    data = [int(i) for i in msg]
     print('Received: ')
-    print(*msg)
+    print(*data)
     # ------------decrypt and decode------------
-    decyptedMsg = Utils.decryptMessage(msg, d, n1)
+    decyptedMsg = Utils.decryptMessage(data, d, n1)
     decodedMsg = Utils.decodeMessage(decyptedMsg)
     print('Decrypted: ')
     print(decodedMsg)
 
     # --------Read message from terminal--------
+    print('Send message to server:')
     data = input()
     # ------------encode and encrypt------------
     encoddedMsg = Utils.encodeMessage(data)
     encyptedMsg = Utils.encryptMessage(encoddedMsg, e1, n1)
-    print('Cipher: ')
+    print('Ciphertext: ')
     print(*encyptedMsg)
     # ----------Send encrypted message-----------
     sio.emit('chat message', [str(i) for i in encyptedMsg])
