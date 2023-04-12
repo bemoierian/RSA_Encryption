@@ -25,7 +25,7 @@ Now, send a message from the server terminal to the client, and so on.
 
 ## Choosing number of bits for the key
 
-Open server.py or client.py, change the value of nbits variable to the desired number of bits for p and q, the resulting n will have 2 * nbits, minimum number for nbits is 14.
+Open server.py or client.py in your text editor, change the value of nbits variable to the desired number of bits for p and q, the resulting n will have 2 * nbits, minimum number for nbits is 14.
 
 ## How does it work
 
